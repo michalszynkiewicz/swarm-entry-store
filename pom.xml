@@ -21,7 +21,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.wildfly.swarm</groupId>
-                <artifactId>bom</artifactId>
+                <artifactId>bom-all</artifactId>
                 <version>${version.wildfly.swarm}</version>
                 <scope>import</scope>
                 <type>pom</type>
@@ -67,10 +67,21 @@
             <scope>provided</scope>
         </dependency>
         <!-- Wildfly Swarm Fractions -->
+
+        <!-- JAXRS -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jaxrs</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jaxrs-multipart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>swagger</artifactId>
+        </dependency>
+        <!-- db -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jpa</artifactId>
@@ -84,6 +95,8 @@
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>datasources</artifactId>
         </dependency>
+
+        <!-- other -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>cdi</artifactId>
@@ -97,6 +110,8 @@
             <artifactId>lombok</artifactId>
             <version>1.16.12</version>
         </dependency>
+
+        <!-- test -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>arquillian</artifactId>

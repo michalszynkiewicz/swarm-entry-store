@@ -2,6 +2,8 @@ package com.github.michalszynkiewicz.entrystore.endpoint;
 
 import com.github.michalszynkiewicz.entrystore.dao.EntryDao;
 import com.github.michalszynkiewicz.entrystore.model.Entry;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 @Path("/entries")
 @Produces("application/json")
 @Consumes("application/json")
+@Api(value = "/entries", description = "Entry endpoint", tags = "entry")
 public class EntryEndpoint {
 
     @Inject
     private EntryDao entryDao;
 
     @GET
+    @ApiOperation("get all entries")
     public Response getAll() {
         List<Entry> all = entryDao.getAll();
         List<EntryDto> entries = all.stream().map(EntryDto::new).collect(Collectors.toList());
@@ -32,6 +36,7 @@ public class EntryEndpoint {
     }
 
     @POST
+    @ApiOperation("add entry")
     public Response add(EntryDto dto) {
         Entry entry = dto.toEntry();
         Integer id = entryDao.save(entry);
