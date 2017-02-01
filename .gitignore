@@ -3,3 +3,5 @@ target
 *.swp
 *.iml
 debug.log
+/node
+/node_modules
