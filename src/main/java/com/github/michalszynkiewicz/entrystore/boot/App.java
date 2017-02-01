@@ -1,10 +1,11 @@
 package com.github.michalszynkiewicz.entrystore.boot;
 
+import com.github.michalszynkiewicz.entrystore.endpoint.EntryEndpoint;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.cdi.CDIFraction;
 import org.wildfly.swarm.config.logging.Level;
+import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.logging.LoggingFraction;
 import org.wildfly.swarm.monitor.MonitorFraction;
 import org.wildfly.swarm.swagger.SwaggerArchive;
@@ -25,27 +26,25 @@ public class App {
         System.out.println("Initializing app from main");
 
         Swarm swarm = createSwarm(args);
-        swarm
-                .fraction(logging())
+        swarm.fraction(logging())
                 .start()
+//                .deploy();
                 .deploy(deployment(swarm));
     }
 
     private static Archive deployment(Swarm swarm) throws Exception {
-
-//        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "swagger-app.war");
-//        deployment.addResource(RestApplication.class);
-//        deployment.addClass(EntryEndpoint.class);        // mstodo can it be removed?
-
-        Archive<?> deployment = swarm.createDefaultDeployment();
+        JAXRSArchive deployment = swarm.createDefaultDeployment().as(JAXRSArchive.class); // mstodo remove?
+        deployment.addResource(RestApplication.class);
+        deployment.addClass(EntryEndpoint.class);
         // Enable the swagger bits
-        SwaggerArchive archive = ShrinkWrap.create(SwaggerArchive.class);
+        SwaggerArchive archive = deployment.as(SwaggerArchive.class);
         // Tell swagger where our resources are
         archive.setResourcePackages(
                 "com.github.michalszynkiewicz.entrystore.endpoint",
-                "com.github.michalszynkiewicz.entrystore.boot"
-        );
+                "com.github.michalszynkiewicz.entrystore.boot");
         archive.setTitle("Entry store");
+
+        deployment.addAllDependencies();
 
         return deployment;
     }

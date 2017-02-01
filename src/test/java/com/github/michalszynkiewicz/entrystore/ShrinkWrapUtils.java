@@ -49,7 +49,7 @@ public class ShrinkWrapUtils {
         return archive.merge(imported.as(JavaArchive.class));
     }
 
-    public static JARArchive createDefaultJar(Class<?> aClass) {
+    public static JARArchive createDefaultJar(Class<?> aClass) {   // mstodo try to reuse swarm getDefaultDeployment!
         JARArchive archive = ShrinkWrap.create(JARArchive.class);
         ClassLoader cl = aClass.getClassLoader();
 
@@ -64,7 +64,7 @@ public class ShrinkWrapUtils {
                 Class<?> cls = cl.loadClass(className);
                 codeSources.add(cls.getProtectionDomain().getCodeSource());
             } catch (ClassNotFoundException | NoClassDefFoundError e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
         };
 
