@@ -2,12 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/sockjs/1/sockjs.min.js"></script>
     <title>Entry store application</title>
 </head>
 <body>
 <ul>
-    <li><a href="/swagger">swagger documentation</a></li>
+    <li><a href="/swagger?url=%2Frest%2Fswagger.json">swagger documentation</a></li>
     <li><a href="/rest">REST root</a></li>
 </ul>
+
+New entries:
+<ul class="newEntries">
+
+</ul>
+
+<script>
+    var serverSocket = new WebSocket("ws://localhost:8080/ws/entries");
+    var newEntries = document.getElementsByClassName("newEntries")[0];
+
+    serverSocket.onmessage = function (event) {
+        console.log("got: " + event);
+        var entry = JSON.parse(event.data);
+        var entryElement = document.createElement("li");
+        entryElement.appendChild(document.createTextNode(entry.content + " by " + entry.author));
+        newEntries.insertBefore(entryElement, newEntries.firstChild);
+    }
+</script>
+
 </body>
 </html>

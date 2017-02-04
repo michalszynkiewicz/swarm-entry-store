@@ -10,7 +10,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <version.wildfly.swarm>2017.1.1</version.wildfly.swarm>
+        <version.wildfly.swarm>2017.2.0</version.wildfly.swarm>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -68,7 +68,7 @@
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
-                        <phase>process-resources</phase>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <nodeVersion>v6.9.5</nodeVersion>
                             <npmVersion>4.2.0</npmVersion>
@@ -80,7 +80,7 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>process-resources</phase>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <arguments>install swagger-ui --prefix ${project.build.directory}/ui</arguments>
                         </configuration>
@@ -91,18 +91,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.0.2</version>
-                <goals>
-                    <goal>copy-resources</goal>
-                </goals>
                 <executions>
                     <execution>
                         <id>copy-swagger-ui</id>
-                        <phase>process-resources</phase>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/entry-store</outputDirectory>
+                            <outputDirectory>${project.build.directory}/entry-store/swagger</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/ui/node_modules/swagger-ui</directory>
+                                    <directory>${project.build.directory}/ui/node_modules/swagger-ui/dist</directory>
+                                    <include src="*"/>
                                 </resource>
                             </resources>
                         </configuration>

@@ -1,13 +1,14 @@
 package com.github.michalszynkiewicz.entrystore.boot;
 
-import com.github.michalszynkiewicz.entrystore.endpoint.EntryEndpoint;
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.cdi.CDIFraction;
 import org.wildfly.swarm.config.logging.Level;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.logging.LoggingFraction;
+import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.monitor.MonitorFraction;
+import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.swagger.SwaggerArchive;
 import org.wildfly.swarm.swagger.SwaggerFraction;
 
@@ -27,21 +28,30 @@ public class App {
 
         Swarm swarm = createSwarm(args);
         swarm.fraction(logging())
+                .fraction(security())
                 .start()
-//                .deploy();
                 .deploy(deployment(swarm));
     }
 
+    private static Fraction security() {
+        // mstodo!!!
+        return new ManagementFraction()
+                .securityRealm("ManagementRealm", (realm) -> {
+                    realm.inMemoryAuthentication((authn) -> {
+                        authn.add("admin", "password", true);
+                    });
+                    realm.inMemoryAuthorization((authz) -> {
+                        authz.add("bob", "admin");
+                    });
+                });
+    }
+
     private static Archive deployment(Swarm swarm) throws Exception {
-        JAXRSArchive deployment = swarm.createDefaultDeployment().as(JAXRSArchive.class); // mstodo remove?
-        deployment.addResource(RestApplication.class);
-        deployment.addClass(EntryEndpoint.class);
-        // Enable the swagger bits
+        JAXRSArchive deployment = swarm.createDefaultDeployment().as(JAXRSArchive.class);
+
         SwaggerArchive archive = deployment.as(SwaggerArchive.class);
-        // Tell swagger where our resources are
-        archive.setResourcePackages(
-                "com.github.michalszynkiewicz.entrystore.endpoint",
-                "com.github.michalszynkiewicz.entrystore.boot");
+        archive.setResourcePackages("com.github.michalszynkiewicz.entrystore.endpoint");
+        archive.setPrettyPrint(true);
         archive.setTitle("Entry store");
 
         deployment.addAllDependencies();
@@ -54,7 +64,6 @@ public class App {
         URL stageConfig = cl.getResource("project-stages.yml");
 
         return new Swarm(args)
-                .withStageConfig(stageConfig)
                 .fraction(new CDIFraction())
                 .fraction(new SwaggerFraction())
                 .fraction(new MonitorFraction());
@@ -75,6 +84,6 @@ public class App {
                     f.formatter("%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n");
 
                 })
-                .rootLogger(Level.DEBUG, "FILE");
+                .rootLogger(Level.DEBUG, "FILE", "CONSOLE");
     }
 }

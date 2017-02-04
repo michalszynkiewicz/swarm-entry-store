@@ -6,10 +6,9 @@ package com.github.michalszynkiewicz.entrystore.boot;
  * Time: 11:07 AM
  */
 
-import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
 @ApplicationPath("/rest")
 public class RestApplication extends Application {
-
 }
