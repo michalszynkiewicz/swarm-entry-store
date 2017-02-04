@@ -53,6 +53,7 @@ public class App {
         archive.setResourcePackages("com.github.michalszynkiewicz.entrystore.endpoint");
         archive.setPrettyPrint(true);
         archive.setTitle("Entry store");
+        archive.setContextRoot("/rest");
 
         deployment.addAllDependencies();
 
